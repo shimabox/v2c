@@ -17,5 +17,9 @@ It runs if it is a browser supporting the **getUserMedia API**.
 
 Todo.
 
+## Related
+
+- [shimabox/henohenomohe-js: Face recognition with clmtrakr.js and draw Henohenomoheji(Japanese style Emoji).](https://github.com/shimabox/henohenomohe-js "shimabox/henohenomohe-js: Face recognition with clmtrakr.js and draw Henohenomoheji(Japanese style Emoji).")
+
 ## License
 The MIT License (MIT). Please see [License File](LICENSE) for more information.
