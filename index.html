@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>v2c(video2canvas) example</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+</style>
+</head>
+<body>
+<h1>v2c(video2canvas) demo.</h1>
+
+<div id="v2c-wrapper"></div>
+
+<script src="v2c.js"></script>
+<script>
+
+const v2c = new V2C('#v2c-wrapper');
+
+// When specifying an option.
+/*
+// Override option.
+const option = {
+    'useFrontCamera': true,
+    'videoId': 'video',
+    // video constraints
+    'constraintsForFront': {video: {facingMode : 'user'}},
+    'constraintsForRear': {video: {facingMode : {exact : 'environment'}}},
+    // callback
+    'callbackOnVideoLoadError': _callbackOnVideoLoadError
+};
+
+// Callback when failed to load video.
+const _callbackOnVideoLoadError = function(err, canvas, useFrontCamera) {
+    console.log(err, canvas, useFrontCamera);
+}
+
+let v2c = new V2C('#v2c-wrapper', option);
+let v2c = new V2C('#v2c-wrapper', {'callbackOnVideoLoadError': _callbackOnVideoLoadError});
+*/
+
+example();
+
+async function example() {
+    await start();
+    await switchCamera();
+    await stop();
+    await restart();
+}
+
+function start() {
+    let resolved = false;
+    const p = new Promise((resolve, reject) => {
+        // Start.
+        v2c.start((canvas, elapsedTime) => {
+            console.log(canvas, elapsedTime);
+            if (resolved === false) {
+                resolved = true;
+                resolve();
+            }
+        });
+    });
+
+    return p;
+}
+
+function switchCamera() {
+    const p = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            // Camera switch. Only for smartphone.
+            if (isMobile()) {
+                v2c.switchCamera();
+                console.log(v2c.useFrontCamera() === false);
+            }
+            resolve();
+        }, 3000)
+    });
+
+    return p;
+}
+
+function stop() {
+    const p = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            v2c.stop();
+            resolve();
+        }, 5000);
+    });
+
+    return p;
+}
+
+function restart() {
+    const p = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (isMobile()) {
+                v2c.switchCamera();
+            }
+
+            // When callback is unnecessary.
+            v2c.start();
+
+            resolve();
+        }, 3000);
+    });
+
+    return p;
+}
+
+// Maybe has a rear camera.
+function isMobile() {
+    let ua = navigator.userAgent;
+    return (ua.indexOf('iPhone') > 0 || ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0)
+           || ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0;
+}
+
+</script>
+
+</body>
+</html>
