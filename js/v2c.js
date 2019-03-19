@@ -125,6 +125,7 @@ V2C.prototype = {
         this.video.setAttribute('autoplay', '');
 
         this.video.style.position = 'absolute';
+        this.video.style.zIndex   = -1;
 
         if (this._useFrontCamera) {
             this.video.style.transform = 'scaleX(-1)';
