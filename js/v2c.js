@@ -102,6 +102,37 @@ V2C.prototype = {
             this.stop();
         });
     },
+    getDataUrl: function() {
+        return this._getDataUrl(this.canvas, this._useFrontCamera);
+    },
+    capture: function(n) {
+        const name = n || 'caputure';
+        const link = document.createElement('a');
+
+        this.wrapper.appendChild(link);
+
+        link.setAttribute('download', name + '.png');
+        link.addEventListener('click', (e) => e.target.href = this._getDataUrl(this.canvas, this._useFrontCamera));
+        link.click();
+
+        this.wrapper.removeChild(link);
+    },
+    _getDataUrl: function(canvas, useFrontCamera) {
+        const w   = canvas.width;
+        const h   = canvas.height;
+        const c   = document.createElement('canvas');
+        const ctx = c.getContext('2d');
+
+        c.width = w;
+        c.height = h;
+
+        if (useFrontCamera) {
+            ctx.scale(-1, 1);
+        }
+        ctx.drawImage(canvas, -w, 0, w, h);
+
+        return c.toDataURL();
+    },
     _createCanvas: function() {
         this.canvas        = document.createElement('canvas');
         this.canvasCtx     = this.canvas.getContext('2d');

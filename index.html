@@ -83,6 +83,10 @@ function stop() {
     const p = new Promise((resolve, reject) => {
         setTimeout(() => {
             v2c.stop();
+
+            console.log(v2c.getDataUrl());
+            v2c.capture();
+
             resolve();
         }, 5000);
     });
