@@ -109,9 +109,14 @@ V2C.prototype = {
 
         const name = n ? n : 'caputure';
         const link = document.createElement('a');
+
+        this.wrapper.appendChild(link);
+
         link.setAttribute('download', name + '.png');
         link.addEventListener('click', (e) => e.target.href = this._getCaptureDataUrl(this.canvas, this._useFrontCamera));
         link.click();
+
+        this.wrapper.removeChild(link);
     },
     _getCaptureDataUrl: function(orgCanvas, useFrontCamera) {
         const w = orgCanvas.width;
