@@ -46,6 +46,7 @@ async function example() {
     await switchCamera();
     await stop();
     await restart();
+    await capture();
 }
 
 function start() {
@@ -83,10 +84,6 @@ function stop() {
     const p = new Promise((resolve, reject) => {
         setTimeout(() => {
             v2c.stop();
-
-            console.log(v2c.getDataUrl());
-            v2c.capture();
-
             resolve();
         }, 5000);
     });
@@ -106,6 +103,19 @@ function restart() {
 
             resolve();
         }, 3000);
+    });
+
+    return p;
+}
+
+function capture() {
+    const p = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            console.log(v2c.getDataUrl());
+            v2c.capture();
+
+            resolve();
+        }, 5000);
     });
 
     return p;
