@@ -5,6 +5,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
+.controll-button {
+    display: flex;
+}
+
+.button {
+    padding: 5px 10px;
+    background-color: rgba(105, 105, 105, 1);
+    color: #fff;
+    border: 1px solid rgba(192, 192, 192, .1);
+    font-size: 1em;
+    border-radius: 3px;
+    margin-right: .5em;
+    outline: 0;
+}
+
+.deactivate:hover {
+    background-color: rgba(105, 105, 105, .8);
+}
+
+.active, .deactivate:active {
+    padding-top: 6px;
+    padding-bottom: 4px;
+    background-color: rgba(105, 105, 105, .8);
+    box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
 </style>
 </head>
 <body>
@@ -12,123 +37,61 @@
 
 <div id="v2c-wrapper"></div>
 
+<h3>Controll</h3>
+
+<div class="controll-button">
+  <input type="button" id="start" value="Start" class="button active">
+  <input type="button" id="stop" value="Stop" class="button deactivate">
+  <input type="button" id="capture" value="Capture" class="button deactivate">
+  <input type="button" id="switch" value="SwitchCamera" class="button deactivate">
+</div>
+
 <script src="js/v2c.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
 
-const v2c = new V2C('#v2c-wrapper');
+    const startButton = document.getElementById('start');
+    const stopButton = document.getElementById('stop');
+    const captureButton = document.getElementById('capture');
+    const switchButton = document.getElementById('switch');
 
-// When specifying an option.
-/*
-// Override option.
-const option = {
-    'useFrontCamera': true,
-    'videoId': 'video',
-    // video constraints
-    'constraintsForFront': {video: {facingMode : 'user'}},
-    'constraintsForRear': {video: {facingMode : {exact : 'environment'}}},
-    // callback
-    'callbackOnVideoLoadError': _callbackOnVideoLoadError
-};
+    const option = {
+        'canvasWidth': 480,
+        'canvasHeight': 320
+    };
 
-// Callback when failed to load video.
-const _callbackOnVideoLoadError = function(err, canvas, useFrontCamera) {
-    console.log(err, canvas, useFrontCamera);
-}
+    const v2c = new V2C('#v2c-wrapper', option);
+    v2c.start();
 
-let v2c = new V2C('#v2c-wrapper', option);
-let v2c = new V2C('#v2c-wrapper', {'callbackOnVideoLoadError': _callbackOnVideoLoadError});
-*/
+    startButton.addEventListener('click', (e) => {
+        const targetClassList = e.target.classList;
+        if (targetClassList.contains('deactivate')) {
+            targetClassList.remove('deactivate');
+            targetClassList.add('active');
+        }
 
-example();
-
-async function example() {
-    await start();
-    await switchCamera();
-    await stop();
-    await restart();
-    await capture();
-}
-
-function start() {
-    let resolved = false;
-    const p = new Promise((resolve, reject) => {
-        // Start.
-        v2c.start((canvas, elapsedTime) => {
-            console.log(canvas, elapsedTime);
-            if (resolved === false) {
-                resolved = true;
-                resolve();
-            }
-        });
+        v2c.start();
     });
 
-    return p;
-}
+    stopButton.addEventListener('click', () => {
+        const targetClassList = startButton.classList;
+        if (targetClassList.contains('active')) {
+            targetClassList.remove('active');
+            targetClassList.add('deactivate');
+        }
 
-function switchCamera() {
-    const p = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Camera switch. Only for smartphone.
-            if (isMobile()) {
-                v2c.switchCamera();
-                console.log(v2c.useFrontCamera() === false);
-            }
-            resolve();
-        }, 3000)
+        v2c.stop();
     });
 
-    return p;
-}
-
-function stop() {
-    const p = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            v2c.stop();
-            resolve();
-        }, 5000);
+    captureButton.addEventListener('click', () => {
+        v2c.capture();
     });
 
-    return p;
-}
-
-function restart() {
-    const p = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            if (isMobile()) {
-                v2c.switchCamera();
-            }
-
-            // When callback is unnecessary.
-            v2c.start();
-
-            resolve();
-        }, 3000);
+    switchButton.addEventListener('click', () => {
+        v2c.switchCamera();
     });
-
-    return p;
-}
-
-function capture() {
-    const p = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            console.log(v2c.getDataUrl());
-            v2c.capture();
-
-            resolve();
-        }, 5000);
-    });
-
-    return p;
-}
-
-// Maybe has a rear camera.
-function isMobile() {
-    let ua = navigator.userAgent;
-    return (ua.indexOf('iPhone') > 0 || ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0)
-           || ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0;
-}
-
+});
 </script>
-
 </body>
 </html>

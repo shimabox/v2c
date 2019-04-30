@@ -128,8 +128,10 @@ V2C.prototype = {
 
         if (useFrontCamera) {
             ctx.scale(-1, 1);
+            ctx.drawImage(canvas, -w, 0, w, h);
+        } else {
+            ctx.drawImage(canvas, 0, 0, w, h);
         }
-        ctx.drawImage(canvas, -w, 0, w, h);
 
         return c.toDataURL();
     },
