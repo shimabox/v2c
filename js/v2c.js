@@ -2,9 +2,7 @@
 
 const V2C = function(selector, option) {
     const defaultOption = {
-        // canvas size(4:3)
-        'canvasWidth': 640,
-        'canvasHeight': 480,
+        'longSideSize': 640,
         'canvasId': 'canvas',
         'videoId': 'video',
         'useFrontCamera': true,
@@ -22,6 +20,7 @@ const V2C = function(selector, option) {
     this.wrapper = document.querySelector(selector);
     this.option  = Object.assign({}, defaultOption, option || {});
 
+    this.longSideSize    = this.option.longSideSize;
     this.video           = null;
     this.videoTrack      = null;
     this.trackingStarted = false;
@@ -102,6 +101,10 @@ V2C.prototype = {
             this.stop();
         });
     },
+    changeLongSideSize: function(size) {
+        this.longSideSize = size;
+        this._adjustProportions(this.video.videoWidth, this.video.videoHeight, this.trackingStarted);
+    },
     getDataUrl: function() {
         return this._getDataUrl(this.canvas, this._useFrontCamera);
     },
@@ -136,10 +139,12 @@ V2C.prototype = {
         return c.toDataURL();
     },
     _createCanvas: function() {
-        this.canvas        = document.createElement('canvas');
-        this.canvasCtx     = this.canvas.getContext('2d');
-        this.canvas.width  = this.option.canvasWidth;
-        this.canvas.height = this.option.canvasHeight;
+        this.canvas    = document.createElement('canvas');
+        this.canvasCtx = this.canvas.getContext('2d');
+
+        const ratio = this.canvas.height / this.canvas.width;
+        this.canvas.width  = this.longSideSize;
+        this.canvas.height = Math.round(this.longSideSize * ratio);
 
         this.canvas.setAttribute('id', this.option.canvasId);
 
@@ -150,8 +155,8 @@ V2C.prototype = {
     _createVideo: function() {
         this.video = document.createElement('video');
 
-        this.video.width  = this.option.canvasWidth;
-        this.video.height = this.option.canvasHeight;
+        this.video.width  = this.canvas.width;
+        this.video.height = this.canvas.height;
 
         this.video.setAttribute('id', this.option.videoId);
         this.video.setAttribute('playsinline', '');
@@ -251,12 +256,14 @@ V2C.prototype = {
         }
 
         // Align ratio of video size(video.videoWidth, video.videoHeight).
-        // Keep same height, just change width.
         const proportion = w / h;
-        const videoWidth = Math.round(this.video.height * proportion);
+        const videoWidth = this.video.height * proportion;
+        const ratio      = this.longSideSize / videoWidth;
 
-        this.video.width  = videoWidth;
-        this.canvas.width = videoWidth;
+        this.video.width   = Math.round(videoWidth * ratio);
+        this.video.height  = Math.round(this.video.height * ratio);
+        this.canvas.width  = this.video.width;
+        this.canvas.height = this.video.height;
     },
     _callbackOnVideoLoadSuccess: function(canvas) {
         canvas.style.backgroundColor = 'rgba(255, 255, 255, 1)';

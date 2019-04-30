@@ -4,6 +4,7 @@
 <title>v2c(video2canvas) example</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" />
 <style>
 .controll-button {
     display: flex;
@@ -30,9 +31,27 @@
     background-color: rgba(105, 105, 105, .8);
     box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
+
+.range {
+    display: flex;
+}
+
+#long-side-size {
+    margin: 28px 1em;
+}
+
+.range-desc {
+    margin: 22px 0;
+}
+
+.github-fork-ribbon:before {
+    background-color: #696969;
+}
 </style>
 </head>
 <body>
+<a class="github-fork-ribbon" href="https://github.com/shimabox/v2c" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+
 <h1>v2c(video2canvas) demo.</h1>
 
 <div id="v2c-wrapper"></div>
@@ -40,10 +59,16 @@
 <h3>Controll</h3>
 
 <div class="controll-button">
-  <input type="button" id="start" value="Start" class="button active">
-  <input type="button" id="stop" value="Stop" class="button deactivate">
-  <input type="button" id="capture" value="Capture" class="button deactivate">
-  <input type="button" id="switch" value="SwitchCamera" class="button deactivate">
+    <input type="button" id="start" value="Start" class="button active">
+    <input type="button" id="stop" value="Stop" class="button deactivate">
+    <input type="button" id="capture" value="Capture" class="button deactivate">
+    <input type="button" id="switch" value="SwitchCamera" class="button deactivate">
+</div>
+
+<div class="range">
+    <h4>Canvas long side</h4>
+    <input id="long-side-size" type="range" step="5" min="50" max="" value="">
+    <p class="range-desc"><span class="range-val"></span><span>px</span></p>
 </div>
 
 <script src="js/v2c.js"></script>
@@ -51,14 +76,16 @@
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
 
+    const longSideSize = 360;
     const startButton = document.getElementById('start');
     const stopButton = document.getElementById('stop');
     const captureButton = document.getElementById('capture');
     const switchButton = document.getElementById('switch');
+    const sizeSlider = document.getElementById('long-side-size');
+    const rangeVal = document.querySelector('.range-val');
 
     const option = {
-        'canvasWidth': 480,
-        'canvasHeight': 320
+        'longSideSize': longSideSize
     };
 
     const v2c = new V2C('#v2c-wrapper', option);
@@ -70,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetClassList.remove('deactivate');
             targetClassList.add('active');
         }
+        sizeSlider.disabled = false;
 
         v2c.start();
     });
@@ -80,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetClassList.remove('active');
             targetClassList.add('deactivate');
         }
+        sizeSlider.disabled = true;
 
         v2c.stop();
     });
@@ -91,6 +120,28 @@ document.addEventListener('DOMContentLoaded', () => {
     switchButton.addEventListener('click', () => {
         v2c.switchCamera();
     });
+
+    sizeSlider.max     = getMeasurementSize();
+    sizeSlider.value   = longSideSize;
+    rangeVal.innerHTML = longSideSize;
+
+    sizeSlider.addEventListener('input', (e) => {
+        rangeVal.innerHTML = e.target.value;
+    });
+
+    sizeSlider.addEventListener('change', (e) => {
+        v2c.changeLongSideSize(e.target.value);
+    });
+
+    function getMeasurementSize() {
+        let _o = window.orientation;
+        let _orientation = _o === undefined ? 90 : _o;
+        if (_orientation === 0 || _orientation === 180) {
+            return window.innerHeight;
+        }
+
+        return window.innerWidth;
+    }
 });
 </script>
 </body>
