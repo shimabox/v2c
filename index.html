@@ -44,6 +44,10 @@
     margin: 22px 0;
 }
 
+.effect h3 {
+    margin: 0;
+}
+
 .github-fork-ribbon:before {
     background-color: #696969;
 }
@@ -71,7 +75,16 @@
     <p class="range-desc"><span class="range-val"></span><span>px</span></p>
 </div>
 
+<div class="effect">
+    <h3>Effect</h3>
+    <select id="effect-list" name="effect-list">
+        <option value="none" selected>none</option>
+        <option value="grayscale">grayscale</option>
+    </select>
+</div>
+
 <script src="js/v2c.js"></script>
+<script src="js/effect.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
@@ -83,13 +96,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const switchButton = document.getElementById('switch');
     const sizeSlider = document.getElementById('long-side-size');
     const rangeVal = document.querySelector('.range-val');
+    const effectList = document.getElementById('effect-list');
 
     const option = {
         'longSideSize': longSideSize
     };
 
     const v2c = new V2C('#v2c-wrapper', option);
-    v2c.start();
+    v2c.start((canvas, t) => {
+        applyEffect(canvas, t);
+    });
 
     startButton.addEventListener('click', (e) => {
         const targetClassList = e.target.classList;
@@ -99,7 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         sizeSlider.disabled = false;
 
-        v2c.start();
+        v2c.start((canvas, t) => {
+            applyEffect(canvas, t);
+        });
     });
 
     stopButton.addEventListener('click', () => {
@@ -133,6 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
         v2c.changeLongSideSize(e.target.value);
     });
 
+    let effectType = 'none';
+    effectList.addEventListener('change', (e) => {
+        effectType = e.target.value;
+    });
+
     function getMeasurementSize() {
         let _o = window.orientation;
         let _orientation = _o === undefined ? 90 : _o;
@@ -141,6 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return window.innerWidth;
+    }
+
+    function applyEffect(canvas, t) {
+        if (effectType === 'none') { return; }
+
+        const _effect = effect(effectType);
+        _effect(canvas, t);
     }
 });
 </script>
