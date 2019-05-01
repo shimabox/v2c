@@ -8,6 +8,8 @@ function effect(effectType) {
             return invert();
         case 'threshold':
             return threshold();
+        case 'bayerDither':
+            return bayerDither();
         case 'sepia':
             return sepia();
         case 'mosaic':
@@ -83,6 +85,46 @@ function threshold() {
                 data[i + 0] = data[i + 1] = data[i + 2] = 255;
             } else {
                 data[i + 0] = data[i + 1] = data[i + 2] = 0;
+            }
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+    }
+}
+
+/**
+ * 2値化（ベイヤーディザ）
+ * @link http://blog.nariyu.jp/2015/01/canvas-image-effects/
+ */
+function bayerDither() {
+    const matrix = [
+        0,  8,  2, 10,
+       12,  4, 14,  6,
+        3, 11,  1,  9,
+       15,  7, 13,  5
+    ];
+    return (canvas) => {
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        const cw = canvas.width;
+        const ch = canvas.height;
+
+        for (let x = 0; x < cw; x++) {
+            for (let y = 0; y < ch; y++) {
+                let index = (x + y * cw) * 4;
+                let threshold = matrix[(x % 4) + (y % 4) * 4];
+
+                let r = data[index + 0] / 16;
+                let g = data[index + 1] / 16;
+                let b = data[index + 2] / 16;
+
+                let v = r * 0.298912 + g * 0.586611 + b * 0.114478;
+                if (v > threshold) {
+                    data[index + 0] = data[index + 1] = data[index + 2] = 255;
+                } else {
+                    data[index + 0] = data[index + 1] = data[index + 2] = 0;
+                }
             }
         }
 
