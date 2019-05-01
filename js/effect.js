@@ -12,6 +12,8 @@ function effect(effectType) {
             return bayerDither();
         case 'sepia':
             return sepia();
+        case 'heatmap':
+            return heatmap();
         case 'mosaic':
             return mosaic();
         default:
@@ -147,6 +149,66 @@ function sepia() {
             data[i]     = (brightness / 255) * 240; // red
             data[i + 1] = (brightness / 255) * 200; // green
             data[i + 2] = (brightness / 255) * 145; // blue
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+    }
+}
+
+/**
+ * 擬似カラー
+ * @link http://blog.nariyu.jp/2015/01/canvas-image-effects/
+ */
+function heatmap() {
+    return (canvas) => {
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        for(let index = 0; index < data.length; index += 4) {
+            let r = data[index + 0];
+            let g = data[index + 1];
+            let b = data[index + 2];
+
+            // 明るさを色相に変換する
+            let brightness = (r + g + b) / 3;
+            let h = 240 - 240 / 255 * brightness;
+
+            let s = 1;
+            let v = 1;
+
+            // HSV を RGB に変換する
+            let u = v * 255;
+            let i = Math.floor(h / 60) % 6;
+            let f = (h / 60) - i;
+            let p = u * (1 - s);
+            let q = u * (1 - f * s);
+            let t = u * (1 - (1 - f) * s);
+
+            switch (i) {
+                case 0:
+                    [r, g, b] = [u, t, p];
+                    break;
+                case 1:
+                    [r, g, b] = [q, u, p];
+                    break;
+                case 2:
+                    [r, g, b] = [p, u, t];
+                    break;
+                case 3:
+                    [r, g, b] = [p, q, u];
+                    break;
+                case 4:
+                    [r, g, b] = [t, p, u];
+                    break;
+                case 5:
+                    [r, g, b] = [u, p, q];
+                    break;
+            }
+
+            data[index]     = Math.round(r); // red
+            data[index + 1] = Math.round(g); // green
+            data[index + 2] = Math.round(b); // blue
         }
 
         ctx.putImageData(imageData, 0, 0);
