@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetClassList.add('active');
         }
         sizeSlider.disabled = false;
+        effectList.disabled = false;
 
         v2c.start((canvas, t) => {
             applyEffect(canvas, t);
@@ -140,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetClassList.add('deactivate');
         }
         sizeSlider.disabled = true;
+        effectList.disabled = true;
 
         v2c.stop();
     });
