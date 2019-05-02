@@ -6,6 +6,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" />
 <style>
+h1 {
+    margin: 0 0 .5em 2.5em;
+}
+
 .controll-button {
     display: flex;
 }
@@ -89,6 +93,7 @@
     </select>
 </div>
 
+<script src="js/vendor/stats/stats.min.js"></script>
 <script src="js/v2c.js"></script>
 <script src="js/effect.js"></script>
 <script>
@@ -111,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const v2c = new V2C('#v2c-wrapper', option);
     v2c.start((canvas, t) => {
         applyEffect(canvas, t);
+        _stats();
     });
 
     startButton.addEventListener('click', (e) => {
@@ -123,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         v2c.start((canvas, t) => {
             applyEffect(canvas, t);
+            _stats();
         });
     });
 
@@ -178,6 +185,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const _effect = effect(effectType);
         _effect(canvas, t);
     }
+
+    /*
+     |--------------------------------------------------------------------------
+     | Stats
+     |--------------------------------------------------------------------------
+     */
+    function _stats() {
+        body.dispatchEvent(event);
+    }
+    const body = document.querySelector('body');
+    // Create the event.
+    const event = document.createEvent('Event');
+    // Define that the event name is 'build'.
+    event.initEvent('draw_loop', true, true);
+
+    const stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '0px';
+    body.appendChild(stats.domElement);
+
+    // Update stats on every iteration.
+    document.addEventListener('draw_loop', function(event) {
+        stats.update();
+    }, false);
 });
 </script>
 </body>
