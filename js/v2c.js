@@ -10,6 +10,7 @@ const V2C = function(selector, option) {
         'constraintsForFront': {video: {facingMode : 'user'}},
         'constraintsForRear': {video: {facingMode : {exact : 'environment'}}},
         // callback
+        'callbackOnAfterInit': null,
         'callbackOnOrientationChange': null,
         'callbackOnLoadedmetadataVideo': null,
         'callbackOnVideoLoadSuccess': this._callbackOnVideoLoadSuccess,
@@ -41,12 +42,16 @@ V2C.prototype = {
         this._createVideo();
         this._settingWrapper();
         this._addOrientationChangeEvent(this.option.callbackOnOrientationChange);
-    },
-    getVideo: function() {
-        return this.video;
+
+        if (typeof this.option.callbackOnAfterInit === 'function') {
+            this.option.callbackOnAfterInit(this);
+        }
     },
     getCanvas: function() {
         return this.canvas;
+    },
+    getVideo: function() {
+        return this.video;
     },
     useFrontCamera: function() {
         return this._useFrontCamera;
