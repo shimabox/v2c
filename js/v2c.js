@@ -295,7 +295,7 @@ V2C.prototype = {
 
         ctx.save();
 
-        ctx.font = "1.5em 'sans-serif'";
+        ctx.font = "1em 'sans-serif'";
         ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 
         // Set message to center.
