@@ -25,6 +25,10 @@ h1 {
     outline: 0;
 }
 
+.init {
+    background-color: rgba(0, 0, 0, 1);
+}
+
 .deactivate:hover {
     background-color: rgba(105, 105, 105, .8);
 }
@@ -67,7 +71,7 @@ h1 {
 <h3>Controll</h3>
 
 <div class="controll-button">
-    <input type="button" id="start" value="Start" class="button active">
+    <input type="button" id="start" value="Start" class="button init deactivate">
     <input type="button" id="stop" value="Stop" class="button deactivate">
     <input type="button" id="capture" value="Capture" class="button deactivate">
     <input type="button" id="switch" value="SwitchCamera" class="button deactivate">
@@ -109,15 +113,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const rangeVal = document.querySelector('.range-val');
     const effectList = document.getElementById('effect-list');
 
+    sizeSlider.disabled = true;
+    effectList.disabled = true;
+
+    // Callback function after initialization.
+    const callbackOnAfterInit = function(v2c) {
+        const canvas  = v2c.getCanvas();
+        const ctx     = canvas.getContext('2d');
+        const w       = canvas.width;
+        const h       = canvas.height;
+        const message = 'Click Start Button.';
+
+        canvas.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+
+        const _c      = document.createElement('canvas');
+        const _ctx    = _c.getContext('2d');
+        _c.width = w;
+        _c.height = h;
+        _ctx.font = "2em 'sans-serif'";
+        _ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+
+        const metrics   = _ctx.measureText(message);
+        const textWidth = metrics.width;
+        const x         = (w / 2) - (textWidth / 2);
+        const y         = h / 2;
+
+        _ctx.fillText(message, x, y);
+
+        ctx.save();
+        if (v2c.useFrontCamera()) {
+            ctx.scale(-1, 1);
+            ctx.drawImage(_c, -w, 0, w, h);
+        } else {
+            ctx.drawImage(_c, 0, 0, w, h);
+        }
+        ctx.restore();
+    }
+
     const option = {
-        'longSideSize': longSideSize
+        'longSideSize': longSideSize,
+        'callbackOnAfterInit': callbackOnAfterInit
     };
 
     const v2c = new V2C('#v2c-wrapper', option);
-    v2c.start((canvas, t) => {
-        applyEffect(canvas, t);
-        _stats();
-    });
 
     startButton.addEventListener('click', (e) => {
         const targetClassList = e.target.classList;
