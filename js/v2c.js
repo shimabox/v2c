@@ -208,7 +208,7 @@ V2C.prototype = {
           before_orientation = e.target.orientation;
 
           if (typeof callback === 'function') {
-              callback(this.video);
+              callback();
           }
       });
     },
