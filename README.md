@@ -1,10 +1,14 @@
 # v2c
-Video(webcam) to canvas.
+Video(webcam) to canvas.  
+And canvas to the image.
 
 ## Demo
+
+![demo](https://github.com/shimabox/assets/blob/master/v2c/demo.gif)
+
 https://shimabox.github.io/v2c/
 
-![demo](https://github.com/shimabox/assets/blob/master/v2c/qr.png)
+![demo-qr](https://github.com/shimabox/assets/blob/master/v2c/qr.png)
 
 It runs if it is a browser supporting the **getUserMedia API**.  
 [Can I use... Support tables for HTML5, CSS3, etc](https://caniuse.com/#search=getUserMedia "Can I use... Support tables for HTML5, CSS3, etc")
