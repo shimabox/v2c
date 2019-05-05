@@ -51,7 +51,7 @@ When create an instance (`new V2C('#v2c-wrapper')`), the following elements are 
 
 ```html
 <div id="v2c-wrapper" style="display: flex; flex-direction: column; width: min-content;">
-  <video width="640" height="320" id="video" playsinline="" autoplay="" style="position: absolute; z-index: -1; transform: scaleX(-1);"></video>
+  <video width="640" height="320" id="video" playsinline autoplay style="position: absolute; z-index: -1; transform: scaleX(-1);"></video>
   <canvas width="640" height="320" id="canvas" style="transform: scaleX(-1);"></canvas>
 </div>
 ```
