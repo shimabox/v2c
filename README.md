@@ -231,18 +231,6 @@ v2c.start();
 
 ## Public Function
 
-### getCanvas() `:HTMLElement`
-
-- Return the canvas element.
-
-### getVideo() `:HTMLElement`
-
-- Return the video element.
-
-### useFrontCamera() `:boolean`
-
-- Return the flag whether to use the front camera.
-
 ### start()
 
 - Start drawing process.
@@ -257,6 +245,18 @@ v2c.start((canvas, t) => {
 ### stop()
 
 - Stop the drawing process.
+
+### getCanvas() `:HTMLElement`
+
+- Return the canvas element.
+
+### getVideo() `:HTMLElement`
+
+- Return the video element.
+
+### useFrontCamera() `:boolean`
+
+- Return the flag whether to use the front camera.
 
 ### switchCamera()
 
@@ -278,6 +278,10 @@ v2c.start((canvas, t) => {
 - `filename` is optional.
   - If you want to change the name, give a `filename` to the argument.
   - Default is `'capture'`(capture.png).
+
+## See Also
+
+[Video(Webカメラ)の映像をCanvasに描画するライブラリを書いた | Shimabox Blog](https://blog.shimabox.net/2019/05/09/wrote_a_library_for_drawing_video-webcam_images_on_canvas/ "Video(Webカメラ)の映像をCanvasに描画するライブラリを書いた | Shimabox Blog")
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE) for more information.
